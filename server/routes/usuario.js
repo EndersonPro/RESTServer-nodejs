@@ -1,11 +1,13 @@
 const express = require("express");
-const Usuario = require("../models/usuario");
 const bycryt = require("bcrypt");
+
 const _ = require('lodash');
+const Usuario = require("../models/usuario");
+const { verificarToken, verificaAdmin_Role } = require("../middlewares/autenticacion")
 
 const app = express();
 
-app.get('/usuario', (req, res) => {
+app.get('/usuario', verificarToken, (req, res) => {
 
     /* /usuario?since=5&limit=5 */
     let since = Number(req.query.since) || 0;
@@ -32,7 +34,7 @@ app.get('/usuario', (req, res) => {
         })
 })
 
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [verificarToken, verificaAdmin_Role], (req, res) => {
     let body = req.body;
 
     let usuario = new Usuario({
@@ -58,7 +60,7 @@ app.post('/usuario', (req, res) => {
 
 })
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [verificarToken, verificaAdmin_Role], (req, res) => {
     let id = req.params.id;
     /* Usando Lodash para filtrar el objeto y solo optener los elementos del array  */
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
@@ -84,7 +86,7 @@ app.put('/usuario/:id', (req, res) => {
     })
 })
 
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [verificarToken, verificaAdmin_Role], (req, res) => {
     let id = req.params.id;
     Usuario.findByIdAndUpdate(id, { estado: false }, { new: true }, (err, usuarioBorrado) => {
         if (err) {
