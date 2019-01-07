@@ -14,7 +14,7 @@ cd path/to/clone/RESTServer-nodejs
 npm install 
 ```
 
-Necesitas tener instalado MongoDB en tu sistema operativo, levantar el servicio de mongo con el siguiente comando.
+Necesitas tener instalado MongoDB en tu sistema operativo, levantar el servicio de mongo con el siguiente comando Linux y Mac para windows es diferente, revisa la documentacion de MongoDB.
 
 ```bash
 sudo mongod
