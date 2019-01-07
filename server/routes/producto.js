@@ -44,26 +44,49 @@ app.get("/productos/:id", verificarToken, (req, res) => {
         .populate('usuario', 'nombre email')
         .populate('categoria', 'descripcion')
         .exec((err, producto) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        err
-                    })
-                }
-                if (!producto) {
-                    return res.status(400).json({
-                        ok: false,
-                        err:{
-                            message:"ID no existe"
-                        }
-                    })
-                }
-                res.json({
-                    ok: true,
-                    producto
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
                 })
+            }
+            if (!producto) {
+                return res.status(400).json({
+                    ok: false,
+                    err: {
+                        message: "ID no existe"
+                    }
+                })
+            }
+            res.json({
+                ok: true,
+                producto
             })
+        })
 });
+
+// ============================
+// Buscar producto por termino
+// ============================
+app.get("/productos/buscar/:termino", verificarToken, (req, res) => {
+    let termino = req.params.termino;
+    let regex = new RegExp(termino, 'i');
+
+    Producto.find({ nombre: regex })
+        .populate('categoria', 'nombre')
+        .exec((err, productos) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                })
+            }
+            res.json({
+                ok: true,
+                productos
+            })
+        })
+})
 
 // ============================
 // Crear nuevo producto
@@ -150,7 +173,7 @@ app.put("/productos/:id", verificarToken, (req, res) => {
 app.delete("/productos/:id", verificarToken, (req, res) => {
     let id = req.params.id;
 
-    Producto.findById(id, (err,producto)=>{
+    Producto.findById(id, (err, producto) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -168,7 +191,7 @@ app.delete("/productos/:id", verificarToken, (req, res) => {
 
         producto.disponible = false;
 
-        producto.save((err, produtoBorado)=>{
+        producto.save((err, produtoBorado) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
@@ -176,7 +199,7 @@ app.delete("/productos/:id", verificarToken, (req, res) => {
                 })
             }
             res.json({
-                ok:true,
+                ok: true,
                 producto: produtoBorado,
                 message: "Producto Borrado"
             })
