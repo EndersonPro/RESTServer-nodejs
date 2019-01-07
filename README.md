@@ -20,6 +20,32 @@ Necesitas tener instalado MongoDB en tu sistema operativo, levantar el servicio 
 sudo mongod
 ```
 
+#### Importante
+
+Debes declarar dos variables de entorno en produccion:
+
+- `MONGO_URI`
+- `HOST`
+
+Como el proyecto se desplego en heroku se hizo de la siguente manera.
+
+```bash
+heroku config:set MONGO_URI="<YourURLDatabase>" --app <YourNameApp>
+```
+
+```bash
+heroku config:set HOST=0.0.0.0 --app <YourNameApp>
+```
+
+Con eso sera sufiente para que funcione.
+
+Puedes revisar el proceso en heroku usando el siguiente comando:
+
+```bash
+heroku logs --tail
+```
+
+
 Dentro del archivo `server/config.js` edita el `<YouNameDatabase>` del bloque de codigo siguiente y si tienes mongo corriendo en otro puerto tambien debes editarlo. 
 
 ```javascript
